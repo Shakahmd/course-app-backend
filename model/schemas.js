@@ -4,7 +4,8 @@ const {Schema,model} = mongoose
 const adminSchema = new Schema({
     userName :{type:String,required:true,trim:true},
     email:{type:String,required:true,lowercase:true,unique:true},
-    password:{type:String,required:true,minlength:8}
+    password:{type:String,required:true,minlength:8},
+    
 
 },{
     timestamps:true
@@ -24,11 +25,13 @@ const userSchema = new Schema({
 const userModel = model("User",userSchema)
 
 const courseSchema = new Schema({
+    createdBy:{type:String,required:true},
     title:{type:String,required:true,trim:true},
     description:{type:String,required:true,trim:true},
-    imageLink:{type:String,required:true},
+    imageLink:{type:String,required:false},
     price:{type:Number,required:true},
-    published:{type:Boolean,default:false}
+    published:{type:Boolean,default:false},
+    
 
 },{
     timestamps:true

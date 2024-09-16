@@ -53,6 +53,12 @@ import bcrypt from 'bcrypt'
      
  }
 
+// /user/courses
+// method:GET
+
+
+ 
+
 
  export {
     signUpUser,

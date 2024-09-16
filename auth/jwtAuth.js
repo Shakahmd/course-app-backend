@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 export const jwtAuthentication = async (req,res,next) =>{
         try {
            const authHeader = req.headers.authorization
-           if(!authHeader || !authHeader.startwith("Bearer ")){
+           if(!authHeader || !authHeader.startsWith("Bearer ")){
               res.status(403).json({message:"Authentication header missing or invalid"})
               throw new Error("No authentication header found")
            }
