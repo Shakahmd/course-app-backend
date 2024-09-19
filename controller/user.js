@@ -1,4 +1,4 @@
-import { userModel } from "../model/schemas.js";
+import { courseModel, userModel } from "../model/schemas.js";
 import { passwordGenerator } from "./admin.js";
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
@@ -56,12 +56,66 @@ import bcrypt from 'bcrypt'
 // /user/courses
 // method:GET
 
+   const getAllCoursesUser = async(req,res) =>{
+           try {
+           const courses = await courseModel.find({published:true})
+           res.status(200).json({message:"found All courses",courses})
+            
+           } catch (error) {
+             console.log(error)
+             res.status(500).json({message:"Internal Server Error"})
+           }
+   }
 
+
+   // '/user/courses/:courseId'
+   //GET
+
+   const getSpecificCourse = async(req,res) =>{
+      try {
+         const courseId = req.params.courseId
+         console.log(req.user)
+         console.log(courseId)
+         if(!courseId){
+            res.status(400).json({message:"No courseId found on params !"})
+         }
+         const course =  await courseModel.findById(courseId)
+         console.log("course",course)
+          if(!course){
+             res.status(400).json({message:'No course found'})
+          }
+       
+          const user = await userModel.updateOne({"_id":req.user},{$addToSet:{purchasedCourse:course}})
+          console.log(user)
+           return res.status(200).json({message:"Course purchased successfully !",user})
+           
+      } catch (error) {
+           console.log(error)
+           res.status(500).json({message:"Internal server Error"})
+      }
+   }
  
+   // route('/user/purchasedCourse')
+   //GET 
 
+   const getPurchasedCourses = async(req,res) =>{
+             try {
+             
+              const user =  await userModel.findById(req.user).populate("purchasedCourse")
+              console.log(user)
+              const purchasedCourse = user.purchasedCourse
+               return res.status(200).json({message:"Purchased Coursed",purchasedCourse})
+             } catch (error) {
+               console.log(error)
+               res.status(500).json({message:"Internal server Error"})
+             }
+   }
 
  export {
     signUpUser,
-    userSignIn
+    userSignIn,
+    getAllCoursesUser,
+    getSpecificCourse,
+    getPurchasedCourses
 
  }

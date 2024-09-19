@@ -17,7 +17,8 @@ const adminModel =  model("Admin",adminSchema)
 const userSchema = new Schema({
     userName:{type:String,required:true,trim:true},
     email:{type:String,required:true,lowercase:true,unique:true},
-    password:{type:String,required:true,minlength:8}
+    password:{type:String,required:true,minlength:8},
+    purchasedCourse:[{type:Schema.Types.ObjectId,ref:'Course'}]
 },{
     timestamps:true
 })
