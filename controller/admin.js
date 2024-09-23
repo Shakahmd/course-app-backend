@@ -20,7 +20,7 @@ const signUpAdmin = async(req,res) =>{
      const {userName,password,email} = req.body
      console.log(req.body)
      if(!userName||!password||!email){
-        res.status(400).json({message:"Please provide all fields"})
+       return res.status(400).json({message:"Please provide all fields"})
      }
      const existing =  await adminModel.findOne({email})
       if(existing){
