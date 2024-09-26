@@ -111,11 +111,26 @@ import bcrypt from 'bcrypt'
              }
    }
 
+
+     const getMe = async(req,res) =>{
+        try {
+          
+         const user =   await userModel.findById(req.user).select('-password')
+        
+         
+          return res.status(200).json({user})
+        } catch (error) {
+          console.log(error)
+          res.status(500).json({message:"Inernal Server Error"})
+        }
+     }
+
  export {
     signUpUser,
     userSignIn,
     getAllCoursesUser,
     getSpecificCourse,
-    getPurchasedCourses
+    getPurchasedCourses,
+    getMe
 
  }

@@ -173,6 +173,17 @@ const signInAdmin = async(req,res) =>{
             }
      } 
 
+
+     const getMe = async(req,res) =>{
+         try {
+           const admin =  await adminModel.findById(req.user).select("-password")
+           return res.status(200).json({admin})
+         } catch (error) {
+            console.log(error)
+            res.status(500).json({message:"Internal Server Error"})
+         }
+     }
+
 export{
     signUpAdmin,
     signInAdmin,
@@ -180,5 +191,6 @@ export{
     addCourse,
     updateCourse,
     getCoursesCreatedByAdmin,
-    deleteCourse
+    deleteCourse,
+    getMe
 }
