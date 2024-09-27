@@ -15,7 +15,7 @@ app.use(cors())
 connectDb()
 app.use(adminRouter)
 app.use(userRouter)
-
+app.use('/courseImage',express.static('public/uploads'))
 
 app.listen(port,()=>{
     console.log(`server running on ${port}`)
