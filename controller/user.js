@@ -33,6 +33,7 @@ import bcrypt from 'bcrypt'
  const userSignIn = async(req,res) =>{
     try {
         const{userName,email,password} = req.body
+        console.log(req.body)
         if(!userName||!email||!password){
            return res.status(400).json({message:'Please provide all fields !'})
         }
