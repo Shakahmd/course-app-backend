@@ -2,6 +2,8 @@ import { courseModel, userModel } from "../model/schemas.js";
 import { passwordGenerator } from "./admin.js";
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import mongoose from "mongoose";
+
 
 
 
@@ -12,7 +14,7 @@ import bcrypt from 'bcrypt'
     if(!userName || !password ||!email){
        return res.status(400).json({message:"Please provide all fields !"})
     }
-     console.log(email)
+     
      const isUserExist = await userModel.findOne({email})
      if(isUserExist){
        return  res.status(403).json({message:"User already exist !"})
@@ -33,7 +35,7 @@ import bcrypt from 'bcrypt'
  const userSignIn = async(req,res) =>{
     try {
         const{userName,email,password} = req.body
-        console.log(req.body)
+        
         if(!userName||!email||!password){
            return res.status(400).json({message:'Please provide all fields !'})
         }
@@ -74,21 +76,30 @@ import bcrypt from 'bcrypt'
 
    const getSpecificCourse = async(req,res) =>{
       try {
+         
          const courseId = req.params.courseId
-         console.log(req.user)
-         console.log(courseId)
+         
+        
          if(!courseId){
             res.status(400).json({message:"No courseId found on params !"})
          }
          const course =  await courseModel.findById(courseId)
-         console.log("course",course)
+         
+        
           if(!course){
              res.status(400).json({message:'No course found'})
           }
+
+          await userModel.findByIdAndUpdate({_id:req.user},{
+            $push:{
+               purchasedCourse:courseId
+            }
+          })
        
-          const user = await userModel.updateOne({"_id":req.user},{$addToSet:{purchasedCourse:course}})
-          console.log(user)
-           return res.status(200).json({message:"Course purchased successfully !",user})
+        
+
+         
+           return res.status(200).json({message:"Course purchased successfully !",course})
            
       } catch (error) {
            console.log(error)
@@ -101,10 +112,14 @@ import bcrypt from 'bcrypt'
 
    const getPurchasedCourses = async(req,res) =>{
              try {
-             
-              const user =  await userModel.findById(req.user).populate("purchasedCourse")
-              console.log(user)
+               
+               const user = await userModel.findById(req.user).populate({
+                  path: 'purchasedCourse', 
+                  select: 'title description imageLink price' 
+              });
+              
               const purchasedCourse = user.purchasedCourse
+              
                return res.status(200).json({message:"Purchased Coursed",purchasedCourse})
              } catch (error) {
                console.log(error)
